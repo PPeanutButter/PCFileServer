@@ -1,10 +1,10 @@
 import json
+import mimetypes
 import os
 import sys
-import mimetypes
 import time
 
-from flask import Flask, make_response, request
+from flask import Flask, request, send_file
 
 root = ""
 
@@ -57,12 +57,18 @@ def send_file_detail():
         "value": mime
     }, {
         "key": "大小",
-        "value": (os.path.getsize(root + path) >> 10).__str__()+"KB"
+        "value": (os.path.getsize(root + path) >> 10).__str__() + "KB"
     }, {
         "key": "上次修改时间",
         "value": time.ctime(os.path.getmtime(root + path))
     }]
     return json.dumps(jsonArray), 200, {"Content-Type": "application/json"}
+
+
+@app.route("/getFile")
+def get_file():
+    path = request.args.get("path")
+    return send_file(root+path, as_attachment=True, attachment_filename=path[path.rindex("/")+1:], conditional=True)
 
 
 @app.route("/getDeviceName")
@@ -77,12 +83,12 @@ def get_device_name():
 #      √http://localhost:8081/getFileList?path=/ --获取文件list[{name,type}]
 #      √http://localhost:8081/getAssets?res=style.css --获取html模板资源
 #      √http://localhost:8081/getFileDetail?path=style.css --获取文件信息[{mime_type,size,last_edit_time}]
-#      http://localhost:8081/getFile?path= --下载文件
-#      http://localhost:8081/getVideoPreview?path= --下载视频文件缩略图
-#      http://localhost:8081/settings?key=&value= --设置
+#      √http://localhost:8081/getFile?path= --下载文件
+#      ?http://localhost:8081/getVideoPreview?path= --下载视频文件缩略图
+#      ?http://localhost:8081/settings?key=&value= --设置
 #      √http://localhost:8081/else --获取index.html
 if __name__ == '__main__':
-    app.run(port=8081)
+    app.run()
 
 
 def get_known_mime(mime_type=''):
