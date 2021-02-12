@@ -1,18 +1,18 @@
 import json
 import mimetypes
 import os
-import sys
 import time
 
 from flask import Flask, request, send_file
 
-root = ""
+root = os.path.abspath(os.path.dirname(__file__))
 
 
 def resource_path(relative_path):
-    if hasattr(sys, '_MEIPASS'):
-        return os.path.join(sys._MEIPASS, relative_path)
-    return os.path.join(os.path.abspath("."), relative_path)
+    # if hasattr(sys, '_MEIPASS'):
+    #     return os.path.join(sys._MEIPASS, relative_path)
+    # return os.path.join(os.path.abspath("."), relative_path)
+    return relative_path
 
 
 app = Flask(__name__, static_url_path="", static_folder=resource_path('static'),
@@ -20,7 +20,7 @@ app = Flask(__name__, static_url_path="", static_folder=resource_path('static'),
 
 
 @app.errorhandler(404)
-def not_found(error):
+def not_found(err):
     return app.send_static_file('index.html')
 
 
@@ -77,20 +77,6 @@ def get_device_name():
     return platform.node()
 
 
-# 不管是什么路径的链接都发送模板html，读取路径然后通过api来加载文件夹与文件
-# api：
-#      √http://localhost:8081/getDeviceName --获取文件Device Name
-#      √http://localhost:8081/getFileList?path=/ --获取文件list[{name,type}]
-#      √http://localhost:8081/getAssets?res=style.css --获取html模板资源
-#      √http://localhost:8081/getFileDetail?path=style.css --获取文件信息[{mime_type,size,last_edit_time}]
-#      √http://localhost:8081/getFile?path= --下载文件
-#      ?http://localhost:8081/getVideoPreview?path= --下载视频文件缩略图
-#      ?http://localhost:8081/settings?key=&value= --设置
-#      √http://localhost:8081/else --获取index.html
-if __name__ == '__main__':
-    app.run()
-
-
 def get_known_mime(mime_type=''):
     firstList = os.listdir(resource_path('static/mime-type-icon'))
     it = mime_type.split("/")
@@ -104,3 +90,17 @@ def get_known_mime(mime_type=''):
     except ValueError:
         return it[0] + "/all"
     return mime_type
+
+
+# 不管是什么路径的链接都发送模板html，读取路径然后通过api来加载文件夹与文件
+# api：
+#      √http://localhost:8081/getDeviceName --获取文件Device Name
+#      √http://localhost:8081/getFileList?path=/ --获取文件list[{name,type}]
+#      √http://localhost:8081/getAssets?res=style.css --获取html模板资源
+#      √http://localhost:8081/getFileDetail?path=style.css --获取文件信息[{mime_type,size,last_edit_time}]
+#      √http://localhost:8081/getFile?path= --下载文件
+#      ?http://localhost:8081/getVideoPreview?path= --下载视频文件缩略图
+#      ?http://localhost:8081/settings?key=&value= --设置
+#      √http://localhost:8081/else --获取index.html
+if __name__ == '__main__':
+    app.run(host="0.0.0.0", port=8081)
