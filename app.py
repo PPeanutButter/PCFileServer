@@ -1,18 +1,19 @@
 import json
 import mimetypes
 import os
+import sys
 import time
 
 from flask import Flask, request, send_file
 
-root = os.path.abspath(os.path.dirname(__file__))
+root = os.getcwd()
 
 
 def resource_path(relative_path):
     # if hasattr(sys, '_MEIPASS'):
     #     return os.path.join(sys._MEIPASS, relative_path)
     # return os.path.join(os.path.abspath("."), relative_path)
-    return relative_path
+    return sys.path[0]+'/'+relative_path
 
 
 app = Flask(__name__, static_url_path="", static_folder=resource_path('static'),
