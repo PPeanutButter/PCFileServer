@@ -104,4 +104,6 @@ def get_known_mime(mime_type=''):
 #      ?http://localhost:8081/settings?key=&value= --设置
 #      √http://localhost:8081/else --获取index.html
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=8081)
+	print('挂载目录		'+root)
+	print('脚本目录		'+resource_path(''))
+	app.run(host="0.0.0.0", port=8081)
