@@ -115,8 +115,21 @@ function openSnackbar(error_msg) {
 }
 
 function showDialog() {
-    const dialog = new mdc.dialog.MDCDialog(document.querySelector('.mdc-dialog'));
+    const dialog = new mdc.dialog.MDCDialog(document.querySelector('#dialog-detail'));
     dialog.open();
+}
+
+function addRemoteDownload() {
+    const dialog = new mdc.dialog.MDCDialog(document.querySelector('#dialog-download'));
+    dialog.open();
+}
+
+function addRemoteDownloadTask() {
+    const url = $("#input_url").val().replace(/&/g,"__and__")
+    const fileName = $("#input_name").val()
+    $.get("/remoteDownload?url="+url+"&name="+root+fileName,function(data){
+        openSnackbar(data)
+    });
 }
 
 getFileList()

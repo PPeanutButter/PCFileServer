@@ -12,7 +12,7 @@
     <script type="text/javascript" src="/getAssets?res=html.js"></script>
     <script type="text/javascript" src="/getAssets?res=app.js"></script>
     <script type="text/javascript">
-        $.get("/getDeviceName",function(data){
+        $.get("/getDeviceName", function (data) {
             document.title = data;
         });
     </script>
@@ -21,14 +21,22 @@
 <header class="mdc-top-app-bar">
     <div class="mdc-top-app-bar__row">
         <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
-            <button class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button" aria-label="Open navigation menu" onclick="goBack()">arrow_back</button>
+            <button class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button"
+                    aria-label="Open navigation menu" onclick="goBack()">arrow_back
+            </button>
             <span class="mdc-top-app-bar__title"></span>
         </section>
         <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end">
-            <button class="material-icons mdc-top-app-bar__action-item mdc-icon-button" aria-label="Options" onclick="triggerMenu()">more_vert</button>
+            <button class="material-icons mdc-top-app-bar__action-item mdc-icon-button" aria-label="Options"
+                    onclick="addRemoteDownload()">cloud
+            </button>
+            <button class="material-icons mdc-top-app-bar__action-item mdc-icon-button" aria-label="Options"
+                    onclick="triggerMenu()">more_vert
+            </button>
             <div class="mdc-menu-surface--anchor" style="top: -20px;">
                 <div class="mdc-menu mdc-menu-surface">
-                    <ul class="mdc-list menu-list-panel" role="menu" aria-hidden="true" aria-orientation="vertical" tabindex="-1">
+                    <ul class="mdc-list menu-list-panel" role="menu" aria-hidden="true" aria-orientation="vertical"
+                        tabindex="-1">
                     </ul>
                 </div>
             </div>
@@ -47,9 +55,10 @@
             <div aria-live="polite" class="mdc-snackbar__label" role="status"></div>
         </div>
     </div>
-    <div class="mdc-dialog">
+    <div id="dialog-detail" class="mdc-dialog">
         <div class="mdc-dialog__container">
-            <div aria-describedby="my-dialog-content" aria-labelledby="my-dialog-title" aria-modal="true" class="mdc-dialog__surface" role="alertdialog">
+            <div aria-describedby="my-dialog-content" aria-labelledby="my-dialog-title" aria-modal="true"
+                 class="mdc-dialog__surface" role="alertdialog">
                 <!-- Title cannot contain leading whitespace due to mdc-typography-baseline-top() -->
                 <h2 class="mdc-dialog__title" id="my-dialog-title">
                     信息
@@ -59,18 +68,70 @@
                     <div class="gudAKb file-icon" style="min-height: 230px;">
 
                     </div>
-<!--                    文件名-->
+                    <!--文件名-->
                     <ul class="mdc-list">
                         <li class="mdc-list-item file-dialog-name__text" style="padding: inherit;width: auto;">
                         </li>
                     </ul>
-<!--                    信息-->
+                    <!--信息-->
                     <ul class="mdc-list mdc-list-detail-panel mdc-list--avatar-list">
 
                     </ul>
                 </div>
                 <div class="mdc-dialog__actions">
-<!--                    按钮-->
+                    <!--按钮-->
+                </div>
+            </div>
+        </div>
+        <div class="mdc-dialog__scrim">
+        </div>
+    </div>
+    <div id="dialog-download" class="mdc-dialog">
+        <div class="mdc-dialog__container">
+            <div aria-describedby="my-dialog-content" aria-labelledby="my-dialog-title" aria-modal="true"
+                 class="mdc-dialog__surface" role="alertdialog">
+                <!-- Title cannot contain leading whitespace due to mdc-typography-baseline-top() -->
+                <h2 class="mdc-dialog__title" id="my-dialog-title">
+                    添加离线下载
+                </h2>
+                <div class="mdc-dialog__content">
+                    <div>
+                        <label class="mdc-text-field mdc-text-field--outlined" style="width: 100%;margin-top: 20px;">
+                          <span class="mdc-notched-outline">
+                            <span class="mdc-notched-outline__leading"></span>
+                            <span class="mdc-notched-outline__notch">
+                                <span class="mdc-floating-label" id="my-label-id">远程链接</span>
+                            </span>
+                            <span class="mdc-notched-outline__trailing"></span>
+                          </span>
+                            <input id="input_url" type="text" class="mdc-text-field__input" aria-labelledby="my-label-id">
+                        </label>
+                    </div>
+                    <div>
+                        <label class="mdc-text-field mdc-text-field--outlined" style="width: 100%;margin-top: 20px;">
+                          <span class="mdc-notched-outline">
+                            <span class="mdc-notched-outline__leading"></span>
+                            <span class="mdc-notched-outline__notch">
+                                <span class="mdc-floating-label" id="my-label-id">文件名</span>
+                            </span>
+                            <span class="mdc-notched-outline__trailing"></span>
+                          </span>
+                            <input id="input_name" type="text" class="mdc-text-field__input" aria-labelledby="my-label-id">
+                        </label>
+                    </div>
+                </div>
+                <div class="mdc-dialog__actions">
+                    <!--按钮-->
+                    <button type="button" data-mdc-dialog-action="0" class="mdc-button mdc-dialog__button"
+                            onclick="">
+                        <div class="mdc-button__ripple"></div>
+                        <span class="mdc-button__label">查看所有下载</span>
+                    </button>
+                    <button type="button" data-mdc-dialog-action="1" class="mdc-button mdc-dialog__button dialog-copy"
+                            onclick="addRemoteDownloadTask()">
+                        <div class="mdc-button__ripple"></div>
+                        <span class="mdc-button__label">添加下载</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -83,18 +144,23 @@
         for (const button of buttons) {
             mdc.ripple.MDCRipple.attachTo(button);
         }
+        const textFields = document.querySelectorAll('.mdc-text-field');
+        for (const textField of textFields) {
+            new mdc.textField.MDCTextField(textField);
+        }
         const topAppBar = new mdc.topAppBar.MDCTopAppBar(document.querySelector('.mdc-top-app-bar'));
-        dialog.listen('MDCDialog:opened', function() {
+        dialog.listen('MDCDialog:opened', function () {
             // Assuming contentElement references a common parent element with the rest of the page's content
             contentElement.setAttribute('aria-hidden', 'true');
         });
-        dialog.listen('MDCDialog:closing', function() {
+        dialog.listen('MDCDialog:closing', function () {
             contentElement.removeAttribute('aria-hidden');
         });
         const menu = new mdc.menu.MDCMenu(document.querySelector('.mdc-menu'));
+
         function triggerMenu() {
             menu.open = true;
         }
-</script>
+    </script>
 </main>
 </body>

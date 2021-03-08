@@ -13,7 +13,7 @@ def resource_path(relative_path):
     # if hasattr(sys, '_MEIPASS'):
     #     return os.path.join(sys._MEIPASS, relative_path)
     # return os.path.join(os.path.abspath("."), relative_path)
-    return sys.path[0]+'/'+relative_path
+    return sys.path[0] + '/' + relative_path
 
 
 app = Flask(__name__, static_url_path="", static_folder=resource_path('static'),
@@ -69,7 +69,7 @@ def send_file_detail():
 @app.route("/getFile")
 def get_file():
     path = request.args.get("path")
-    return send_file(root+path, as_attachment=True, attachment_filename=path[path.rindex("/")+1:], conditional=True)
+    return send_file(root + path, as_attachment=True, attachment_filename=path[path.rindex("/") + 1:], conditional=True)
 
 
 @app.route("/getDeviceName")
@@ -93,6 +93,17 @@ def get_known_mime(mime_type=''):
     return mime_type
 
 
+@app.route("/remoteDownload")
+def add_remote_download():
+    url = request.args.get("url").replace("__and__", "&")
+    name = request.args.get("name")
+    l = name.rindex("/")
+    import subprocess
+    cmd = 'wget -P %s -O %s %s' % (root+name[:l], name[l+1:], url)
+    subprocess.call(cmd, shell=True)
+    return "成功添加离线任务:"+name
+
+
 # 不管是什么路径的链接都发送模板html，读取路径然后通过api来加载文件夹与文件
 # api：
 #      √http://localhost:8081/getDeviceName --获取文件Device Name
@@ -102,8 +113,9 @@ def get_known_mime(mime_type=''):
 #      √http://localhost:8081/getFile?path= --下载文件
 #      ?http://localhost:8081/getVideoPreview?path= --下载视频文件缩略图
 #      ?http://localhost:8081/settings?key=&value= --设置
+#      ?http://localhost:8081/remoteDownload?url=&name= --远程下载
 #      √http://localhost:8081/else --获取index.html
 if __name__ == '__main__':
-	print('挂载目录		'+root)
-	print('脚本目录		'+resource_path(''))
-	app.run(host="0.0.0.0", port=8081)
+    print('挂载目录		' + root)
+    print('脚本目录		' + resource_path(''))
+    app.run(host="0.0.0.0", port=8081)
