@@ -97,6 +97,7 @@ def get_video_preview():
         cv2.imencode('.jpg', frame)[1].tofile(new_file)
         return send_file(new_file)
     except BaseException as a:
+        print(a.__str__())
         return a.__str__()
 
 
