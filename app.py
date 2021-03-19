@@ -6,7 +6,7 @@ import time
 
 from flask import Flask, request, send_file
 
-root = os.getcwd()
+root = sys.argv[1] if sys.argv[1] else os.getcwd()
 
 
 def resource_path(relative_path):
@@ -101,11 +101,11 @@ def add_remote_download():
     import subprocess
     cmd = 'wget -P %s -O %s %s' % (root+name[:l], name[l+1:], url)
     subprocess.call(cmd, shell=True)
-    return "成功添加离线任务:"+name
+    return "成功添加离线任务:" + name
 
 
 # 不管是什么路径的链接都发送模板html，读取路径然后通过api来加载文件夹与文件
-# api：
+# api
 #      √http://localhost:8081/getDeviceName --获取文件Device Name
 #      √http://localhost:8081/getFileList?path=/ --获取文件list[{name,type}]
 #      √http://localhost:8081/getAssets?res=style.css --获取html模板资源
