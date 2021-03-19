@@ -6,7 +6,7 @@ import time
 
 from flask import Flask, request, send_file
 
-root = sys.argv[1] if sys.argv[1] else os.getcwd()
+root = sys.argv[1] if len(sys.argv) > 1 else os.getcwd()
 
 
 def resource_path(relative_path):
@@ -37,39 +37,68 @@ def send_assets(parent=''):
 
 @app.route('/getFileList')
 def send_file_list():
-    jsonArray = []
+    json_array = []
     path = request.args.get("path")
     for f in os.listdir(root + path):
         mime = mimetypes.guess_type(f)[0]
-        jsonArray.append({
+        json_array.append({
             "name": f,
             "type": "File" if os.path.isfile(root + path + f) else "Directory",
             "mime_type": "application/octet-stream" if mime is None else get_known_mime(mime)
         })
-    return json.dumps(jsonArray), 200, {"Content-Type": "application/json"}
+    return json.dumps(json_array), 200, {"Content-Type": "application/json"}
+
+
+def file_size_desc(size):
+    if size >> 30 >= 1.0:
+        return f'{size / (1024*1024*1024):.2f}GB'
+    if size >> 20 >= 1.0:
+        return f'{size / (1024*1024):.2f}MB'
+    if size >> 10 >= 1.0:
+        return f'{size / 1024:.2f}KB'
+    return f'{size:.2f}B'
 
 
 @app.route('/getFileDetail')
 def send_file_detail():
     path = request.args.get("path")
     mime = mimetypes.guess_type(path, False)[0]
-    jsonArray = [{
+    json_array = [{
         "key": "类型",
         "value": mime
     }, {
         "key": "大小",
-        "value": (os.path.getsize(root + path) >> 10).__str__() + "KB"
+        "value": file_size_desc(os.path.getsize(root + path))
     }, {
         "key": "上次修改时间",
         "value": time.ctime(os.path.getmtime(root + path))
     }]
-    return json.dumps(jsonArray), 200, {"Content-Type": "application/json"}
+    return json.dumps(json_array), 200, {"Content-Type": "application/json"}
 
 
-@app.route("/getFile")
-def get_file():
+@app.route("/getFile/<file_name>")
+def get_file(file_name):
+    # url中加一个文件名避免播放器不知道视频文件名
     path = request.args.get("path")
     return send_file(root + path, as_attachment=True, attachment_filename=path[path.rindex("/") + 1:], conditional=True)
+
+
+@app.route("/getVideoPreview")
+def get_video_preview():
+    path = request.args.get("path")
+    try:
+        import cv2
+        cap = cv2.VideoCapture(root+path)  # 读取视频文件
+        cap.set(cv2.CAP_PROP_POS_FRAMES, float(180))
+        _, frame = cap.read()
+        if not os.path.exists(resource_path('')+"preview"):
+            os.mkdir(resource_path('')+"preview")
+        new_file = resource_path('')+'preview/video.jpg'
+        cv2.imencode('.jpg', frame)[1].tofile(new_file)
+        return send_file(new_file)
+    except BaseException as a:
+        print(a.__str__())
+        return a.__str__()
 
 
 @app.route("/getDeviceName")
@@ -79,15 +108,15 @@ def get_device_name():
 
 
 def get_known_mime(mime_type=''):
-    firstList = os.listdir(resource_path('static/mime-type-icon'))
+    first_list = os.listdir(resource_path('static/mime-type-icon'))
     it = mime_type.split("/")
     try:
-        firstList.index(it[0])
+        first_list.index(it[0])
     except ValueError:
         return "application/octet-stream"
-    secondaryList = os.listdir(resource_path('static/mime-type-icon/' + it[0]))
+    secondary_list = os.listdir(resource_path('static/mime-type-icon/' + it[0]))
     try:
-        secondaryList.index(it[1])
+        secondary_list.index(it[1])
     except ValueError:
         return it[0] + "/all"
     return mime_type
@@ -99,7 +128,7 @@ def add_remote_download():
     name = request.args.get("name")
     l = name.rindex("/")
     import subprocess
-    cmd = 'wget -P %s -O %s %s' % (root+name[:l], name[l+1:], url)
+    cmd = 'wget -P %s -O %s "%s"' % (root+name[:l], name[l+1:], url)
     subprocess.call(cmd, shell=True)
     return "成功添加离线任务:" + name
 
@@ -111,9 +140,9 @@ def add_remote_download():
 #      √http://localhost:8081/getAssets?res=style.css --获取html模板资源
 #      √http://localhost:8081/getFileDetail?path=style.css --获取文件信息[{mime_type,size,last_edit_time}]
 #      √http://localhost:8081/getFile?path= --下载文件
-#      ?http://localhost:8081/getVideoPreview?path= --下载视频文件缩略图
+#      √http://localhost:8081/getVideoPreview?path= --下载视频文件缩略图
 #      ?http://localhost:8081/settings?key=&value= --设置
-#      ?http://localhost:8081/remoteDownload?url=&name= --远程下载
+#      √http://localhost:8081/remoteDownload?url=&name= --远程下载
 #      √http://localhost:8081/else --获取index.html
 if __name__ == '__main__':
     print('挂载目录		' + root)

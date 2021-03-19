@@ -53,7 +53,7 @@ function getFileDetail(fileName,mime_type){
         //文件名
         $('.file-dialog-name__text').text(fileName);
         $('ul.mdc-list-detail-panel').empty();
-        $('div.mdc-dialog__actions').empty();
+        $('div.mdc-dialog__actions_').empty();
         //判断是否是视频文件
         let isVideo;
         if (mime_type.toLowerCase().startsWith("video/")){
@@ -68,7 +68,7 @@ function getFileDetail(fileName,mime_type){
         for (const list of eval(data)) {
             $('ul.mdc-list-detail-panel').append(String.format(file_detail_html,list.key,list.value))
         }
-        $('div.mdc-dialog__actions').append(String.format(dialog_actions_html,window.location.host+"/getFile?path="+root+fileName,isVideo))
+        $('div.mdc-dialog__actions_').append(String.format(dialog_actions_html,window.location.host+"/getFile/"+fileName+"?path="+root+fileName,isVideo))
         showDialog();
     });
 }
