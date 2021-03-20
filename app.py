@@ -59,7 +59,9 @@ def send_assets(parent=''):
 def send_file_list():
     json_array = []
     path = request.args.get("path")
-    for f in os.listdir(root + path):
+    a = os.listdir(root + path)
+    a.sort()
+    for f in a:
         mime = mimetypes.guess_type(f)[0]
         json_array.append({
             "name": f,
