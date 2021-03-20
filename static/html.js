@@ -24,7 +24,7 @@ const file_html_data = "<c-wiz class=\"pmHCK\" onclick=\"onItemClick('{0}','file
                        "                            <img class=\"a-Ua-c\" src=\"/getAssets?res=mime-type-icon/{1}\"></div>\n" +
                        "                    </div>\n" +
                        "                    <div class=\"TBiAlb\"></div>\n" +
-                       "                    <div class=\"Q5txwe\">{0}\n" +
+                       "                    <div class=\"Q5txwe {3}\">{0}\n" +
                        "                    </div>\n" +
                        "                </div>\n" +
                        "            </div>\n" +

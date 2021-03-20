@@ -63,10 +63,12 @@ def send_file_list():
     a.sort()
     for f in a:
         mime = mimetypes.guess_type(f)[0]
+        bookmark_flag_file = resource_path('') + 'preview/' + (path+f).replace("/", "_") + '.bookmark'
         json_array.append({
             "name": f,
             "type": "File" if os.path.isfile(root + path + f) else "Directory",
-            "mime_type": "application/octet-stream" if mime is None else get_known_mime(mime)
+            "mime_type": "application/octet-stream" if mime is None else get_known_mime(mime),
+            "watched": "watched" if os.path.exists(bookmark_flag_file) else ""
         })
     return json.dumps(json_array), 200, {"Content-Type": "application/json"}
 

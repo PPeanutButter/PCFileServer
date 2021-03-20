@@ -22,13 +22,13 @@ function onItemClick(name,type,mime_type) {
 
 function getFileList(){
     $.get("/getFileList?path="+root,function(data){
-        $('div#dir-panel').empty();
-        $('div#file-panel').empty();
+        $('#dir-panel').empty();
+        $('#file-panel').empty();
         $('.mdc-top-app-bar__title').text(root)
         for (const list of eval(data)) {
             if (list.type === "Directory")
                 $('div#dir-panel').append(String.format(directory_html_data,list.name))
-            else $('div#file-panel').append(String.format(file_html_data,list.name,list.mime_type,root+list.name));
+            else $('div#file-panel').append(String.format(file_html_data,list.name,list.mime_type,root+list.name,list.watched));
         }
         getSettings()
     });
@@ -52,8 +52,8 @@ function getFileDetail(fileName,mime_type){
     $.get("/getFileDetail?path="+root+fileName,function(data){
         //文件名
         $('.file-dialog-name__text').text(fileName);
-        $('ul.mdc-list-detail-panel').empty();
-        $('div.mdc-dialog__actions_').empty();
+        $('.mdc-list-detail-panel').empty();
+        $('.mdc-dialog__actions_').empty();
         //判断是否是视频文件
         let isVideo;
         if (mime_type.toLowerCase().startsWith("video/")){
@@ -102,6 +102,7 @@ function onDialogButtonClick(url,type){
     } else if(type === "bookmark") {
         $.get("/toggleBookmark?path="+url,function(data) {
             openSnackbar(data)
+            getFileList()
         });
     }
 }
