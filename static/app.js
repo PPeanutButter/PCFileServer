@@ -65,10 +65,15 @@ function getFileDetail(fileName,mime_type){
             $('div.file-icon').html(String.format(file_detail_icon_html,"/getAssets?res=mime-type-icon/"+mime_type));
         }
         //详情
+        let bookmark;
         for (const list of eval(data)) {
+            if (list.key === "bookmark_state") {
+                bookmark = list.value
+                continue
+            }
             $('ul.mdc-list-detail-panel').append(String.format(file_detail_html,list.key,list.value))
         }
-        $('div.mdc-dialog__actions_').append(String.format(dialog_actions_html,window.location.host+"/getFile/"+fileName+"?path="+root+fileName,isVideo))
+        $('div.mdc-dialog__actions_').append(String.format(dialog_actions_html,window.location.host+"/getFile/"+fileName+"?path="+root+fileName,isVideo,root+fileName,bookmark))
         showDialog();
     });
 }
@@ -76,8 +81,8 @@ function getFileDetail(fileName,mime_type){
 function onDialogButtonClick(url,type){
     console.log(url)
     if(type === "copy"){
-        var clipboard = new ClipboardJS('.dialog-copy', {
-            text: function(trigger) {
+        const clipboard = new ClipboardJS('.dialog-copy', {
+            text: function (trigger) {
                 return encodeURI(url);
             }
         });
@@ -94,6 +99,10 @@ function onDialogButtonClick(url,type){
         window.open(encodeURI("http://"+url));
     } else if(type === "play") {
         window.open(encodeURI("potplayer://http://"+url));
+    } else if(type === "bookmark") {
+        $.get("/toggleBookmark?path="+url,function(data) {
+            openSnackbar(data)
+        });
     }
 }
 

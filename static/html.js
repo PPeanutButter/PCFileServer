@@ -78,18 +78,23 @@ const file_detail_html = "<li class=\"mdc-list-item\">\n" +
                          "    <span style=\"width: 150px;min-width: 150px;\" class=\"mdc-list-item__text\">{0}</span>\n" +
                          "    <span style=\"max-width: 400px\" class=\"mdc-list-item__text\">{1}</span>\n" +
                          "</li>";
-const dialog_actions_html = "<button type=\"button\" {1} data-mdc-dialog-action=\"0\" class=\"mdc-button mdc-dialog__button\" onclick=\"onDialogButtonClick('{0}','play')\">\n" +
+const dialog_actions_html = "<div class=\"mdc-dialog__actions\">\n" +
+                            "<button type=\"button\" {1} data-mdc-dialog-action=\"0\" class=\"mdc-button mdc-dialog__button\" onclick=\"onDialogButtonClick('{0}','play')\">\n" +
                             "    <div class=\"mdc-button__ripple\"></div>\n" +
                             "    <span class=\"mdc-button__label\">使用PotPlayer播放</span>\n" +
                             "</button>\n" +
-                            "<button type=\"button\" data-mdc-dialog-action=\"1\" class=\"mdc-button mdc-dialog__button dialog-copy\" onclick=\"onDialogButtonClick('{0}','copy')\">\n" +
-                            "    <div class=\"mdc-button__ripple\"></div>\n" +
-                            "    <span class=\"mdc-button__label\">复制链接</span>\n" +
-                            "</button>\n" +
-                            "<button type=\"button\" data-mdc-dialog-action=\"2\" class=\"mdc-button mdc-dialog__button\" onclick=\"onDialogButtonClick('{0}','download')\">\n" +
-                            "    <div class=\"mdc-button__ripple\"></div>\n" +
-                            "    <span class=\"mdc-button__label\">下载文件</span>\n" +
-                            "</button>";
+                            "</div>\n" +
+                            "<div class=\"mdc-card__action-icons\">\n" +
+                            "    <button class=\"material-icons mdc-icon-button mdc-card__action mdc-card__action--icon dialog-copy\"\n" +
+                            "            data-mdc-dialog-action=\"1\" title=\"copy link\" onclick=\"onDialogButtonClick('{0}','copy')\">link\n" +
+                            "    </button>\n" +
+                            "    <button class=\"material-icons mdc-icon-button mdc-card__action mdc-card__action--icon\"\n" +
+                            "            data-mdc-dialog-action=\"2\" title=\"download\" onclick=\"onDialogButtonClick('{0}','download')\">download\n" +
+                            "    </button>\n" +
+                            "    <button class=\"material-icons mdc-icon-button mdc-card__action mdc-card__action--icon\"\n" +
+                            "            data-mdc-dialog-action=\"3\" title=\"add/remove bookmark\" onclick=\"onDialogButtonClick('{2}','bookmark')\">{3}\n" +
+                            "    </button>\n" +
+                            "</div>"
 const menu_list_html = "<li class=\"mdc-list-item\" role=\"menuitem\" onclick=\"getSettings('SHOW_HIDDEN_FILES','{1}')\">\n" +
                        "    <span class=\"mdc-list-item__ripple\"></span>\n" +
                        "    <span class=\"mdc-list-item__text\">{0}</span>\n" +

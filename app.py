@@ -83,6 +83,7 @@ def file_size_desc(size):
 def send_file_detail():
     path = request.args.get("path")
     mime = mimetypes.guess_type(path, False)[0]
+    bookmark_flag_file = resource_path('') + 'preview/' + path.replace("/", "_") + '.bookmark'
     json_array = [{
         "key": "类型",
         "value": mime
@@ -92,8 +93,23 @@ def send_file_detail():
     }, {
         "key": "上次修改时间",
         "value": time.ctime(os.path.getmtime(root + path))
+    }, {
+        "key": "bookmark_state",
+        "value": "bookmark_add" if not os.path.exists(bookmark_flag_file) else "bookmark_added"
     }]
     return json.dumps(json_array), 200, {"Content-Type": "application/json"}
+
+
+@app.route('/toggleBookmark')
+def toggle_bookmark():
+    path = request.args.get("path")
+    bookmark_flag_file = resource_path('') + 'preview/' + path.replace("/", "_") + '.bookmark'
+    if os.path.exists(bookmark_flag_file):
+        os.remove(bookmark_flag_file)
+    else:
+        with open(bookmark_flag_file, 'w') as fp:
+            fp.write("This is a Bookmark file!")
+    return "成功取消标记" if os.path.exists(bookmark_flag_file) else "成功标记为看过"
 
 
 @app.route("/getFile/<file_name>")

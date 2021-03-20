@@ -1,12 +1,17 @@
+<div class="mdc-dialog__actions">
 <button type="button" {1} data-mdc-dialog-action="0" class="mdc-button mdc-dialog__button" onclick="onDialogButtonClick('{0}','play')">
     <div class="mdc-button__ripple"></div>
     <span class="mdc-button__label">使用PotPlayer播放</span>
 </button>
-<button type="button" data-mdc-dialog-action="1" class="mdc-button mdc-dialog__button dialog-copy" onclick="onDialogButtonClick('{0}','copy')">
-    <div class="mdc-button__ripple"></div>
-    <span class="mdc-button__label">复制链接</span>
-</button>
-<button type="button" data-mdc-dialog-action="2" class="mdc-button mdc-dialog__button" onclick="onDialogButtonClick('{0}','download')">
-    <div class="mdc-button__ripple"></div>
-    <span class="mdc-button__label">下载文件</span>
-</button>
+</div>
+<div class="mdc-card__action-icons">
+    <button class="material-icons mdc-icon-button mdc-card__action mdc-card__action--icon dialog-copy"
+            data-mdc-dialog-action="1" title="copy link" onclick="onDialogButtonClick('{0}','copy')">link
+    </button>
+    <button class="material-icons mdc-icon-button mdc-card__action mdc-card__action--icon"
+            data-mdc-dialog-action="2" title="download" onclick="onDialogButtonClick('{0}','download')">download
+    </button>
+    <button class="material-icons mdc-icon-button mdc-card__action mdc-card__action--icon"
+            data-mdc-dialog-action="3" title="add/remove bookmark" onclick="onDialogButtonClick('{2}','bookmark')">{3}
+    </button>
+</div>
