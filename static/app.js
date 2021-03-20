@@ -28,7 +28,7 @@ function getFileList(){
         for (const list of eval(data)) {
             if (list.type === "Directory")
                 $('div#dir-panel').append(String.format(directory_html_data,list.name))
-            else $('div#file-panel').append(String.format(file_html_data,list.name,list.mime_type));
+            else $('div#file-panel').append(String.format(file_html_data,list.name,list.mime_type,root+list.name));
         }
         getSettings()
     });

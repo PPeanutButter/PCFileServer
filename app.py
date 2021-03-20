@@ -1,6 +1,7 @@
 import json
 import mimetypes
 import os
+import socket
 import sys
 import time
 
@@ -20,6 +21,21 @@ app = Flask(__name__, static_url_path="", static_folder=resource_path('static'),
             template_folder=resource_path("templates"))
 
 
+def get_host_ip():
+    """
+    查询本机局域网ip地址
+    :return: ip
+    """
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(('8.8.8.8', 80))
+        ip = s.getsockname()[0]
+        s.close()
+    except Exception:
+        print("ip err")
+    return ip
+
+
 @app.errorhandler(404)
 def not_found(err):
     return app.send_static_file('index.html')
@@ -32,7 +48,11 @@ def send_index_html():
 
 @app.route('/getAssets')
 def send_assets(parent=''):
-    return app.send_static_file(parent + request.args.get("res"))
+    res = request.args.get("res")
+    path = request.args.get("path")
+    if res.startswith("mime-type-icon/video/") and path:
+        return get_video_preview(path)
+    return app.send_static_file(parent + res)
 
 
 @app.route('/getFileList')
@@ -51,9 +71,9 @@ def send_file_list():
 
 def file_size_desc(size):
     if size >> 30 >= 1.0:
-        return f'{size / (1024*1024*1024):.2f}GB'
+        return f'{size / (1024 * 1024 * 1024):.2f}GB'
     if size >> 20 >= 1.0:
-        return f'{size / (1024*1024):.2f}MB'
+        return f'{size / (1024 * 1024):.2f}MB'
     if size >> 10 >= 1.0:
         return f'{size / 1024:.2f}KB'
     return f'{size:.2f}B'
@@ -84,17 +104,20 @@ def get_file(file_name):
 
 
 @app.route("/getVideoPreview")
-def get_video_preview():
-    path = request.args.get("path")
+def get_video_preview(_path=None):
+    path = _path if _path else request.args.get("path")
+    cache_file_name = path.replace("/", "_")
     try:
-        import cv2
-        cap = cv2.VideoCapture(root+path)  # 读取视频文件
-        cap.set(cv2.CAP_PROP_POS_FRAMES, float(180))
-        _, frame = cap.read()
-        if not os.path.exists(resource_path('')+"preview"):
-            os.mkdir(resource_path('')+"preview")
-        new_file = resource_path('')+'preview/video.jpg'
-        cv2.imencode('.jpg', frame)[1].tofile(new_file)
+        # 判断是否有缓存
+        new_file = resource_path('') + 'preview/' + cache_file_name + '.jpg'
+        if not os.path.exists(new_file):
+            import cv2
+            cap = cv2.VideoCapture(root + path)  # 读取视频文件
+            cap.set(cv2.CAP_PROP_POS_FRAMES, float(180))
+            _, frame = cap.read()
+            if not os.path.exists(resource_path('') + "preview"):
+                os.mkdir(resource_path('') + "preview")
+            cv2.imencode('.jpg', frame)[1].tofile(new_file)
         return send_file(new_file)
     except BaseException as a:
         print(a.__str__())
@@ -128,7 +151,7 @@ def add_remote_download():
     name = request.args.get("name")
     l = name.rindex("/")
     import subprocess
-    cmd = 'wget -P %s -O %s "%s"' % (root+name[:l], name[l+1:], url)
+    cmd = 'wget -P %s -O %s "%s"' % (root + name[:l], name[l + 1:], url)
     subprocess.call(cmd, shell=True)
     return "成功添加离线任务:" + name
 
@@ -147,4 +170,5 @@ def add_remote_download():
 if __name__ == '__main__':
     print('挂载目录		' + root)
     print('脚本目录		' + resource_path(''))
+    print('访问地址		' + 'http://' + get_host_ip() + ':8081/')
     app.run(host="0.0.0.0", port=8081)

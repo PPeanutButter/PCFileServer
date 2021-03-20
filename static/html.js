@@ -8,7 +8,7 @@ const file_html_data = "<c-wiz class=\"pmHCK\" onclick=\"onItemClick('{0}','file
                        "                            <div class=\"l-u-Ab-zb l-u-Ab-ul\">\n" +
                        "                                <div class=\"l-u-Ab-zb-Pn-ve\"></div>\n" +
                        "                                <div class=\"l-u-Ab-zb-Lu\"></div>\n" +
-                       "                                <img class=\"l-u-Ab-zb-c\" src=\"/getAssets?res=mime-type-icon/{1}\"></div>\n" +
+                       "                                <img class=\"l-u-Ab-zb-c\" src=\"/getAssets?res=mime-type-icon/{1}&path={2}\"></div>\n" +
                        "                        </div>\n" +
                        "                    </div>\n" +
                        "                </div>\n" +
