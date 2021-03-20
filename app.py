@@ -104,12 +104,13 @@ def send_file_detail():
 def toggle_bookmark():
     path = request.args.get("path")
     bookmark_flag_file = resource_path('') + 'preview/' + path.replace("/", "_") + '.bookmark'
-    if os.path.exists(bookmark_flag_file):
+    state = os.path.exists(bookmark_flag_file)
+    if state:
         os.remove(bookmark_flag_file)
     else:
         with open(bookmark_flag_file, 'w') as fp:
             fp.write("This is a Bookmark file!")
-    return "成功取消标记" if os.path.exists(bookmark_flag_file) else "成功标记为看过"
+    return "成功取消标记" if state else "成功标记为看过"
 
 
 @app.route("/getFile/<file_name>")
