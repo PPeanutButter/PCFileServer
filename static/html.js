@@ -1,36 +1,22 @@
-const file_html_data = "<c-wiz class=\"pmHCK\" onclick=\"onItemClick('{0}','file','{1}')\">\n" +
-                       "    <div class=\"WYuW0e dPmH0b\">\n" +
-                       "        <div role=\"row\">\n" +
-                       "            <div role=\"gridcell\" class=\"file jGNTYb ACGwFc\">\n" +
-                       "                <div class=\"gudAKb\">\n" +
-                       "                    <div class=\"V1mwke\">\n" +
-                       "                        <div class=\"l-u-Ab-zb-x l-ta-wa\">\n" +
-                       "                            <div class=\"l-u-Ab-zb l-u-Ab-ul\">\n" +
-                       "                                <div class=\"l-u-Ab-zb-Pn-ve\"></div>\n" +
-                       "                                <div class=\"l-u-Ab-zb-Lu\"></div>\n" +
-                       "                                <img class=\"l-u-Ab-zb-c\" src=\"/getAssets?res=mime-type-icon/{1}&path={2}\"></div>\n" +
-                       "                        </div>\n" +
-                       "                    </div>\n" +
-                       "                </div>\n" +
-                       "                <div class=\"bSmy5\">\n" +
-                       "                    <div class=\"a-Oa-qd-Nd\">\n" +
-                       "                        <svg height=\"100%\" width=\"100%\" viewBox=\"0 0 10 10\" preserveAspectRatio=\"none\"\n" +
-                       "                             focusable=\"false\">\n" +
-                       "                            <rect width=\"10\" height=\"10\"></rect>\n" +
-                       "                        </svg>\n" +
-                       "                    </div>\n" +
-                       "                    <div class=\"tohzcb\">\n" +
-                       "                        <div class=\"a-c\">\n" +
-                       "                            <img class=\"a-Ua-c\" src=\"/getAssets?res=mime-type-icon/{1}\"></div>\n" +
-                       "                    </div>\n" +
-                       "                    <div class=\"TBiAlb\"></div>\n" +
-                       "                    <div class=\"Q5txwe {3}\">{0}\n" +
-                       "                    </div>\n" +
-                       "                </div>\n" +
-                       "            </div>\n" +
-                       "        </div>\n" +
-                       "    </div>\n" +
-                       "</c-wiz>";
+const file_html_data =  "<div class=\"mdc-card mdc-card--outlined demo-card mdc-card__primary-action demo-card__primary-action mdc-ripple-upgraded\">\n" +
+                        "    <img class=\"mdc-card__media mdc-card__media--16-9\"\n" +
+                        "         src=\"/getAssets?res=mime-type-icon/{1}&path={2}\"/>\n" +
+                        "    <div class=\"mdc-card-wrapper__text-section\"><!---->\n" +
+                        "        <div class=\"demo-card__title {3}\">{0}</div>\n" +
+                        "        <div class=\"demo-card__subhead\"></div>\n" +
+                        "        <!----></div>\n" +
+                        "    <div class=\"mdc-card__actions\"><!----><!----><!---->\n" +
+                        "        <button class=\"mdc-button mdc-card__action mdc-card__action--button mdc-ripple-upgraded\">\n" +
+                        "            <span class=\"mdc-button__label\"><!---->Action 1<!----></span>\n" +
+                        "            <div class=\"mdc-button__ripple\"></div>\n" +
+                        "        </button>\n" +
+                        "        <!----><!----><!---->\n" +
+                        "        <button class=\"mdc-button mdc-card__action mdc-card__action--button mdc-ripple-upgraded\">\n" +
+                        "            <span class=\"mdc-button__label\"><!---->Action 2<!----></span>\n" +
+                        "            <div class=\"mdc-button__ripple\"></div>\n" +
+                        "        </button>\n" +
+                        "        <!----><!----><!----></div>\n" +
+                        "</div>";
 const directory_html_data = "<c-wiz class=\"pmHCK\" onclick=\"onItemClick('{0}','Directory','')\">\n" +
                             "    <div class=\"WYuW0e RDfNAe dPmH0b \">\n" +
                             "        <div  role=\"row\" >\n" +

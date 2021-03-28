@@ -995,13 +995,17 @@
 }
 .demo-card {
     width: auto;
-    margin: 20px 0
+    margin: 10px
 }
 .demo-card__primary {
     padding: 1rem
 }
 .demo-card__title {
-    margin: 0
+    margin: 8px 16px;
+    font-weight: bold;
+    word-wrap: break-word;
+    word-break: break-all;
+    overflow: hidden;
 }
 .demo-card__subtitle {
     margin: 0
@@ -7319,16 +7323,11 @@ svg.mdc-button__icon {
     border-color: rgba(0, 0, 0, .12)
 }
 .mdc-dialog .mdc-dialog__surface {
-    min-width: 500px
+    width: 500px
 }
 @media (max-width:592px) {
     .mdc-dialog .mdc-dialog__surface {
         max-width: calc(100vw - 32px)
-    }
-}
-@media (min-width:592px) {
-    .mdc-dialog .mdc-dialog__surface {
-        max-width: 70%
     }
 }
 .mdc-dialog .mdc-dialog__surface {

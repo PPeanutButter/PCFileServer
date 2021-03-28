@@ -30,7 +30,10 @@ function getFileList(){
                 $('div#dir-panel').append(String.format(directory_html_data,list.name))
             else $('div#file-panel').append(String.format(file_html_data,list.name,list.mime_type,root+list.name,list.watched));
         }
-        getSettings()
+        const selector = '.mdc-card';
+        [].map.call(document.querySelectorAll(selector), function(el) {
+          return new mdc.ripple.MDCRipple(el);
+        });
     });
 }
 

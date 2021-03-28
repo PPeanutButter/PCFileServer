@@ -1,3 +1,9 @@
+.iZmuQcF {
+    display: grid;
+    grid-gap: 0;
+    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+}
+
 .iZmuQc {
     display: grid;
     grid-gap: 0;
