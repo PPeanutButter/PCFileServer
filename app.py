@@ -5,7 +5,7 @@ import socket
 import sys
 import time
 
-from flask import Flask, request, send_file
+from flask import Flask, request, send_file, redirect
 
 root = sys.argv[1] if len(sys.argv) > 1 else os.getcwd()
 
@@ -43,7 +43,15 @@ def not_found(err):
 
 @app.route('/')
 def send_index_html():
-    return app.send_static_file('index.html')
+    if check_client_ip(request.remote_addr):
+        return app.send_static_file('index.html')
+    else:
+        return redirect('/login', code=302)
+
+
+@app.route('/login')
+def send_login_html():
+    return app.send_static_file('login.html')
 
 
 @app.route('/getAssets')
@@ -175,6 +183,29 @@ def add_remote_download():
     cmd = 'wget -P %s -O %s "%s"' % (root + name[:l], name[l + 1:], url)
     subprocess.call(cmd, shell=True)
     return "成功添加离线任务:" + name
+
+
+def check_client_ip(ip):
+    with open(resource_path('')+"user.json", 'r') as f:
+        return ip in json.loads(f.read())['ip']
+
+
+@app.route("/userLogin")
+def user_login():
+    name = request.args.get("name")
+    psw = request.args.get("psw")
+    with open(resource_path('')+"user.json", 'r') as f:
+        j = json.loads(f.read())
+        try:
+            if j[name] == psw:
+                j['ip'].append(request.remote_addr)
+                with open(resource_path('') + "user.json", 'w') as f1:
+                    f1.write(json.dumps(j))
+                return "OK"
+            else:
+                return "用户名或密码错误"
+        except KeyError:
+            return "用户名或密码错误"
 
 
 # 不管是什么路径的链接都发送模板html，读取路径然后通过api来加载文件夹与文件
