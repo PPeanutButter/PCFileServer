@@ -6,7 +6,7 @@ function goNext(name){
 }
 
 function goBack(){
-    if(root != "/"){
+    if(root !== "/"){
         root = root.substring(0,root.substring(0,root.length - 1).lastIndexOf("/") + 1);
         getFileList();
     }else openSnackbar("不能再返回了");
