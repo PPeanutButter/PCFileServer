@@ -17,7 +17,7 @@
         });
     </script>
 </head>
-<body>
+<body style="background-color: #0e0e0e">
 <header class="mdc-top-app-bar">
     <div class="mdc-top-app-bar__row">
         <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
@@ -26,32 +26,14 @@
             </button>
             <span class="mdc-top-app-bar__title"></span>
         </section>
-        <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end">
-            <button class="material-icons mdc-top-app-bar__action-item mdc-icon-button" aria-label="Options"
-                    onclick="addRemoteDownload()">cloud
-            </button>
-            <button class="material-icons mdc-top-app-bar__action-item mdc-icon-button" aria-label="Options"
-                    onclick="triggerMenu()">more_vert
-            </button>
-            <div class="mdc-menu-surface--anchor" style="top: -20px;">
-                <div class="mdc-menu mdc-menu-surface">
-                    <ul class="mdc-list menu-list-panel" role="menu" aria-hidden="true" aria-orientation="vertical"
-                        tabindex="-1">
-                    </ul>
-                </div>
-            </div>
-        </section>
     </div>
-    
-
-
 </header>
 <main class="mdc-top-app-bar--fixed-adjust">
-    <div id="dir-panel" class="iZmuQc">
-
+    <div id="dir-panel" class="dirgrid">
+        <!--这里插入文件夹显示，改为多媒体==OK-->
     </div>
-    <div id="file-panel" class="iZmuQc">
-
+    <div id="file-panel" class="filegrid" style="margin-bottom: 30px;">
+        <!--这里插入文件显示，改为多媒体-->
     </div>
     <div class="mdc-snackbar" id="snackbar">
         <div class="mdc-snackbar__surface">
@@ -90,69 +72,6 @@
         <div class="mdc-dialog__scrim">
         </div>
     </div>
-    <div id="dialog-download" class="mdc-dialog">
-        <div class="mdc-dialog__container">
-            <div aria-describedby="my-dialog-content" aria-labelledby="my-dialog-title" aria-modal="true"
-                 class="mdc-dialog__surface" role="alertdialog">
-                <!-- Title cannot contain leading whitespace due to mdc-typography-baseline-top() -->
-                <h2 class="mdc-dialog__title" id="my-dialog-title">
-                    添加离线下载
-                </h2>
-                <div class="mdc-dialog__content">
-                    <div>
-                        <label class="mdc-text-field mdc-text-field--outlined" style="width: 100%;margin-top: 20px;">
-                          <span class="mdc-notched-outline">
-                            <span class="mdc-notched-outline__leading"></span>
-                            <span class="mdc-notched-outline__notch">
-                                <span class="mdc-floating-label" id="my-label-id">远程链接</span>
-                            </span>
-                            <span class="mdc-notched-outline__trailing"></span>
-                          </span>
-                            <input id="input_url" type="text" class="mdc-text-field__input" aria-labelledby="my-label-id">
-                        </label>
-                    </div>
-                    <div>
-                        <label class="mdc-text-field mdc-text-field--outlined" style="width: 100%;margin-top: 20px;">
-                          <span class="mdc-notched-outline">
-                            <span class="mdc-notched-outline__leading"></span>
-                            <span class="mdc-notched-outline__notch">
-                                <span class="mdc-floating-label" id="my-label-id">文件名</span>
-                            </span>
-                            <span class="mdc-notched-outline__trailing"></span>
-                          </span>
-                            <input id="input_name" type="text" class="mdc-text-field__input" aria-labelledby="my-label-id">
-                        </label>
-                    </div>
-                </div>
-                <div class="mdc-card__actions">
-                    <div class="mdc-dialog__actions">
-                    <!--按钮-->
-                    <button type="button" data-mdc-dialog-action="0" class="mdc-button mdc-dialog__button"
-                            onclick="">
-                        <div class="mdc-button__ripple"></div>
-                        <span class="mdc-button__label">查看所有下载</span>
-                    </button>
-                    <button type="button" data-mdc-dialog-action="1" class="mdc-button mdc-dialog__button dialog-copy"
-                            onclick="addRemoteDownloadTask()">
-                        <div class="mdc-button__ripple"></div>
-                        <span class="mdc-button__label">添加下载</span>
-                    </button>
-                </div>
-                <div class="mdc-card__action-icons">
-                    <button class="material-icons mdc-icon-button mdc-card__action mdc-card__action--icon"
-                            title="Share">copy
-                    </button>
-                    <button class="material-icons mdc-icon-button mdc-card__action mdc-card__action--icon"
-                            title="More options">more_vert
-                    </button>
-                </div>
-                </div>
-
-            </div>
-        </div>
-        <div class="mdc-dialog__scrim">
-        </div>
-    </div>
     <script type="text/javascript">
         const dialog = new mdc.dialog.MDCDialog(document.querySelector('.mdc-dialog'));
         const buttons = document.querySelectorAll('.mdc-button');
@@ -171,18 +90,6 @@
         dialog.listen('MDCDialog:closing', function () {
             contentElement.removeAttribute('aria-hidden');
         });
-        const menu = new mdc.menu.MDCMenu(document.querySelector('.mdc-menu'));
-
-        function triggerMenu() {
-            menu.open = true;
-        }
     </script>
-    </main>
-
-<!--    <div id="music" style="position: fixed; right: 0px; bottom: 10px">-->
-<!--        <div id="container">-->
-<!--            <img src="resource/music.jpg" id="musicImg" alt="Watashi No Uso" width="10%">-->
-<!--            <audio src="resource/Watashi%20No%20Uso-Henry%20William.m4a" controls id="audio"  loop></audio>-->
-<!--        </div>-->
-<!--    </div>-->
+</main>
 </body>

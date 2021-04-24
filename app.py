@@ -11,9 +11,6 @@ root = sys.argv[1] if len(sys.argv) > 1 else os.getcwd()
 
 
 def resource_path(relative_path):
-    # if hasattr(sys, '_MEIPASS'):
-    #     return os.path.join(sys._MEIPASS, relative_path)
-    # return os.path.join(os.path.abspath("."), relative_path)
     return sys.path[0] + '/' + relative_path
 
 
@@ -76,6 +73,13 @@ def send_file_list():
     for f in a:
         mime = mimetypes.guess_type(f)[0]
         bookmark_flag_file = resource_path('') + 'preview/' + (path + f).replace("/", "_") + '.bookmark'
+        if os.path.isdir(root + path + f) and not os.path.exists(root + path + f + '/.cover'):
+            # skip folders that might not contains media file
+            continue
+        if os.path.isfile(root + path + f) and not (
+                "application/octet-stream" if mime is None else get_known_mime(mime)).startswith('video/'):
+            # skip file that is not media file
+            continue
         json_array.append({
             "name": f,
             "type": "File" if os.path.isfile(root + path + f) else "Directory",
@@ -158,6 +162,17 @@ def get_video_preview(_path=None):
             if not os.path.exists(resource_path('') + "preview"):
                 os.mkdir(resource_path('') + "preview")
             cv2.imencode('.jpg', frame)[1].tofile(new_file)
+        return send_file(new_file)
+    except BaseException as a:
+        print(a.__str__())
+        return a.__str__()
+
+
+@app.route("/getCover")
+def get_cover(_path=None):
+    path = request.args.get("cover")
+    try:
+        new_file = root + f'/{path}/.cover'
         return send_file(new_file)
     except BaseException as a:
         print(a.__str__())
