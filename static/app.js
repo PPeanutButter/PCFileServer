@@ -28,12 +28,21 @@ function getFileList() {
         for (const list of eval(data)) {
             if (list.type === "Directory")
                 $('div#dir-panel').append(String.format(directory_html_data, list.name))
-            else $('div#file-panel').append(String.format(file_html_data, list.name, list.mime_type, root + list.name, list.watched));
+            else {
+                let _0 = list.name
+                let _1 = list.mime_type
+                let _2 = root + _0
+                let _3 = window.location.host + "/getFile/" + _0 + "?path=" + _2
+                let _4 = _2
+                let _5 = list.bookmark_state
+                let _6 = list.watched
+                $('div#file-panel').append(String.format(file_html_data, _0, _1, _2, _3, _4, _5, _6));
+            }
         }
-        const selector = '.mdc-button, .mdc-icon-button, .mdc-card__primary-action';
-        const ripples = [].map.call(document.querySelectorAll(selector), function (el) {
-            return new mdc.ripple.MDCRipple(el);
-        });
+        // const selector = '.mdc-button, .mdc-icon-button';
+        // const ripples = [].map.call(document.querySelectorAll(selector), function (el) {
+        //     return new mdc.ripple.MDCRipple(el);
+        // });
     });
 }
 
@@ -44,14 +53,7 @@ function getFileDetail(fileName, mime_type) {
         $('.mdc-list-detail-panel').empty();
         $('.mdc-dialog__actions_').empty();
         //判断是否是视频文件
-        let isVideo;
-        if (mime_type.toLowerCase().startsWith("video/")) {
-            isVideo = ""
-            $('div.file-icon').html(String.format(file_detail_icon_video_html, "/getVideoPreview?path=" + root + fileName));
-        } else {
-            isVideo = "disabled"
-            $('div.file-icon').html(String.format(file_detail_icon_html, "/getAssets?res=mime-type-icon/" + mime_type));
-        }
+        let _2 = "/getVideoPreview?path=" + root + fileName
         //详情
         let bookmark;
         for (const list of eval(data)) {
@@ -59,7 +61,6 @@ function getFileDetail(fileName, mime_type) {
                 bookmark = list.value
                 continue
             }
-            $('ul.mdc-list-detail-panel').append(String.format(file_detail_html, list.key, list.value))
         }
         $('div.mdc-dialog__actions_').append(String.format(dialog_actions_html, window.location.host + "/getFile/" + fileName + "?path=" + root + fileName, isVideo, root + fileName, bookmark))
         showDialog();

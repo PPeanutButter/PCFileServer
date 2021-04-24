@@ -73,18 +73,19 @@ def send_file_list():
     for f in a:
         mime = mimetypes.guess_type(f)[0]
         bookmark_flag_file = resource_path('') + 'preview/' + (path + f).replace("/", "_") + '.bookmark'
-        if os.path.isdir(root + path + f) and not os.path.exists(root + path + f + '/.cover'):
-            # skip folders that might not contains media file
-            continue
-        if os.path.isfile(root + path + f) and not (
-                "application/octet-stream" if mime is None else get_known_mime(mime)).startswith('video/'):
-            # skip file that is not media file
-            continue
+        # if os.path.isdir(root + path + f) and not os.path.exists(root + path + f + '/.cover'):
+        #     # skip folders that might not contains media file
+        #     continue
+        # if os.path.isfile(root + path + f) and not (
+        #         "application/octet-stream" if mime is None else get_known_mime(mime)).startswith('video/'):
+        #     # skip file that is not media file
+        #     continue
         json_array.append({
             "name": f,
             "type": "File" if os.path.isfile(root + path + f) else "Directory",
             "mime_type": "application/octet-stream" if mime is None else get_known_mime(mime),
-            "watched": "watched" if os.path.exists(bookmark_flag_file) else ""
+            "watched": "watched" if os.path.exists(bookmark_flag_file) else "",
+            "bookmark_state": "bookmark_add" if not os.path.exists(bookmark_flag_file) else "bookmark_added"
         })
     return json.dumps(json_array), 200, {"Content-Type": "application/json"}
 
@@ -97,27 +98,6 @@ def file_size_desc(size):
     if size >> 10 >= 1.0:
         return f'{size / 1024:.2f}KB'
     return f'{size:.2f}B'
-
-
-@app.route('/getFileDetail')
-def send_file_detail():
-    path = request.args.get("path")
-    mime = mimetypes.guess_type(path, False)[0]
-    bookmark_flag_file = resource_path('') + 'preview/' + path.replace("/", "_") + '.bookmark'
-    json_array = [{
-        "key": "类型",
-        "value": mime
-    }, {
-        "key": "大小",
-        "value": file_size_desc(os.path.getsize(root + path))
-    }, {
-        "key": "上次修改时间",
-        "value": time.ctime(os.path.getmtime(root + path))
-    }, {
-        "key": "bookmark_state",
-        "value": "bookmark_add" if not os.path.exists(bookmark_flag_file) else "bookmark_added"
-    }]
-    return json.dumps(json_array), 200, {"Content-Type": "application/json"}
 
 
 @app.route('/toggleBookmark')
@@ -133,7 +113,7 @@ def toggle_bookmark():
                 fp.write("This is a Bookmark file!")
         return "成功取消标记" if state else "成功标记为看过"
     else:
-        return redirect('/login', code=302)
+        return "Permission Denied"
 
 
 @app.route("/getFile/<file_name>")
@@ -144,7 +124,7 @@ def get_file(file_name):
         return send_file(root + path, as_attachment=True, attachment_filename=path[path.rindex("/") + 1:],
                          conditional=True)
     else:
-        return "Permission Denied", 404
+        return redirect('/login', code=302)
 
 
 @app.route("/getVideoPreview")

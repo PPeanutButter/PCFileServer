@@ -660,7 +660,7 @@
     padding: 12px
 }
 .mdc-card__action--icon:not(:disabled) {
-    color: rgba(0, 0, 0, .6)
+    color: white;
 }
 @-webkit-keyframes mdc-ripple-fg-radius-in {
     0% {
