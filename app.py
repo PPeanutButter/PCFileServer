@@ -44,14 +44,18 @@ def not_found(err):
 @app.route('/')
 def send_index_html():
     if check_client_ip(request.remote_addr):
-        return app.send_static_file('index.html')
+        return app.send_static_file('index.html'), 200, [("Cache-Control", "no-cache, no-store, must-revalidate"),
+                                                         ("Pragma", "no-cache"), ("Expires", "0"),
+                                                         ("Cache-Control", "public, max-age=0")]
     else:
         return redirect('/login', code=302)
 
 
 @app.route('/login')
 def send_login_html():
-    return app.send_static_file('login.html')
+    return app.send_static_file('login.html'), 200, [("Cache-Control", "no-cache, no-store, must-revalidate"),
+                                                     ("Pragma", "no-cache"), ("Expires", "0"),
+                                                     ("Cache-Control", "public, max-age=0")]
 
 
 @app.route('/getAssets')
@@ -71,7 +75,7 @@ def send_file_list():
     a.sort()
     for f in a:
         mime = mimetypes.guess_type(f)[0]
-        bookmark_flag_file = resource_path('') + 'preview/' + (path+f).replace("/", "_") + '.bookmark'
+        bookmark_flag_file = resource_path('') + 'preview/' + (path + f).replace("/", "_") + '.bookmark'
         json_array.append({
             "name": f,
             "type": "File" if os.path.isfile(root + path + f) else "Directory",
@@ -114,22 +118,29 @@ def send_file_detail():
 
 @app.route('/toggleBookmark')
 def toggle_bookmark():
-    path = request.args.get("path")
-    bookmark_flag_file = resource_path('') + 'preview/' + path.replace("/", "_") + '.bookmark'
-    state = os.path.exists(bookmark_flag_file)
-    if state:
-        os.remove(bookmark_flag_file)
+    if check_client_ip(request.remote_addr):
+        path = request.args.get("path")
+        bookmark_flag_file = resource_path('') + 'preview/' + path.replace("/", "_") + '.bookmark'
+        state = os.path.exists(bookmark_flag_file)
+        if state:
+            os.remove(bookmark_flag_file)
+        else:
+            with open(bookmark_flag_file, 'w') as fp:
+                fp.write("This is a Bookmark file!")
+        return "成功取消标记" if state else "成功标记为看过"
     else:
-        with open(bookmark_flag_file, 'w') as fp:
-            fp.write("This is a Bookmark file!")
-    return "成功取消标记" if state else "成功标记为看过"
+        return redirect('/login', code=302)
 
 
 @app.route("/getFile/<file_name>")
 def get_file(file_name):
-    # url中加一个文件名避免播放器不知道视频文件名
-    path = request.args.get("path")
-    return send_file(root + path, as_attachment=True, attachment_filename=path[path.rindex("/") + 1:], conditional=True)
+    if check_client_ip(request.remote_addr):
+        # url中加一个文件名避免播放器不知道视频文件名
+        path = request.args.get("path")
+        return send_file(root + path, as_attachment=True, attachment_filename=path[path.rindex("/") + 1:],
+                         conditional=True)
+    else:
+        return "Permission Denied", 404
 
 
 @app.route("/getVideoPreview")
@@ -176,17 +187,20 @@ def get_known_mime(mime_type=''):
 
 @app.route("/remoteDownload")
 def add_remote_download():
-    url = request.args.get("url").replace("__and__", "&")
-    name = request.args.get("name")
-    l = name.rindex("/")
-    import subprocess
-    cmd = 'wget -P %s -O %s "%s"' % (root + name[:l], name[l + 1:], url)
-    subprocess.call(cmd, shell=True)
-    return "成功添加离线任务:" + name
+    if check_client_ip(request.remote_addr):
+        url = request.args.get("url").replace("__and__", "&")
+        name = request.args.get("name")
+        l = name.rindex("/")
+        import subprocess
+        cmd = 'wget -P %s -O %s "%s"' % (root + name[:l], name[l + 1:], url)
+        subprocess.call(cmd, shell=True)
+        return "成功添加离线任务:" + name
+    else:
+        return "Permission Denied"
 
 
 def check_client_ip(ip):
-    with open(resource_path('')+"user.json", 'r') as f:
+    with open(resource_path('') + "user.json", 'r') as f:
         return ip in json.loads(f.read())['ip']
 
 
@@ -194,10 +208,10 @@ def check_client_ip(ip):
 def user_login():
     name = request.args.get("name")
     psw = request.args.get("psw")
-    with open(resource_path('')+"user.json", 'r') as f:
+    with open(resource_path('') + "user.json", 'r') as f:
         j = json.loads(f.read())
         try:
-            if j[name] == psw:
+            if j[name] == psw and not check_client_ip(request.remote_addr):
                 j['ip'].append(request.remote_addr)
                 with open(resource_path('') + "user.json", 'w') as f1:
                     f1.write(json.dumps(j))

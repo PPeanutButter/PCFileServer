@@ -79,7 +79,7 @@ const file_detail_html = "<li class=\"mdc-list-item\">\n" +
                          "    <span style=\"max-width: 400px\" class=\"mdc-list-item__text\">{1}</span>\n" +
                          "</li>";
 const dialog_actions_html = "<div class=\"mdc-dialog__actions\">\n" +
-                            "<button type=\"button\" {1} data-mdc-dialog-action=\"0\" class=\"mdc-button mdc-dialog__button\" onclick=\"onDialogButtonClick('{0}','play')\">\n" +
+                            "<button type=\"button\" {1} class=\"mdc-button mdc-dialog__button\" onclick=\"onDialogButtonClick('{0}','play')\">\n" +
                             "    <div class=\"mdc-button__ripple\"></div>\n" +
                             "    <span class=\"mdc-button__label\">使用PotPlayer播放</span>\n" +
                             "</button>\n" +
